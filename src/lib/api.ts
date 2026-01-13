@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { LoginRequest, LoginResponse } from '@incident-tracker/shared';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   withCredentials: true,
 });
 
