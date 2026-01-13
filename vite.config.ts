@@ -7,7 +7,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@incident-tracker/shared': path.resolve(__dirname, './shared/src'),
     },
   },
   server: {
