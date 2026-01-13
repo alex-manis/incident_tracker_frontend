@@ -17,8 +17,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserPublic | null>(null);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: queryKeys.auth.me,
+  const { data, isLoading } = useQuery({
+    queryKey: queryKeys.auth.me(),
     queryFn: authApi.me,
     retry: false,
     enabled: !!localStorage.getItem('accessToken'),
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authApi.login({ email, password }),
     onSuccess: (data) => {
       setUser(data.user);
-      queryClient.setQueryData(queryKeys.auth.me, data.user);
+      queryClient.setQueryData(queryKeys.auth.me(), data.user);
     },
   });
 

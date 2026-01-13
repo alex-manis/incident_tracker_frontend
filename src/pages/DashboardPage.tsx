@@ -8,7 +8,7 @@ export default function DashboardPage() {
   const { user, logout } = useAuth();
 
   const { data: summary, isLoading } = useQuery<DashboardSummary>({
-    queryKey: queryKeys.dashboard.summary,
+    queryKey: queryKeys.dashboard.summary(),
     queryFn: async () => {
       const response = await api.get('/dashboard/summary');
       return response.data;

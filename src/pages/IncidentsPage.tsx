@@ -9,7 +9,6 @@ import {
   IncidentFilters,
   IncidentStatus,
   IncidentSeverity,
-  PaginationParams,
 } from '@incident-tracker/shared';
 
 export default function IncidentsPage() {
