@@ -23,8 +23,11 @@ export default defineConfig({
       define: {
         global: 'globalThis',
       },
+      // Inject stream polyfill during optimization
+      inject: [],
     },
     exclude: ['stream'],
+    include: [],
   },
   build: {
     commonjsOptions: {
