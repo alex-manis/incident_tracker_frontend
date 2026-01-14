@@ -19,20 +19,29 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as any;
+    const originalRequest: any = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        const response = await axios.post('/api/auth/refresh', {}, { withCredentials: true });
-        const { accessToken } = response.data;
-        localStorage.setItem('accessToken', accessToken);
+        const refreshResponse = await api.post(
+          "/auth/refresh",
+          {},
+          { withCredentials: true }
+        );
+
+        const { accessToken } = refreshResponse.data as { accessToken: string };
+
+        localStorage.setItem("accessToken", accessToken);
+
+        originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
         return api(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/login';
+        localStorage.removeItem("accessToken");
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
