@@ -25,19 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (data) {
-      setUser(data);
-    } else if (error) {
-      // Only clear user if error is not a network/module error and there's no access token
-      // This prevents clearing user on module loading errors
-      const isNetworkError = error instanceof Error && (
-        error.message.includes('Cannot find module') ||
-        error.message.includes('MODULE_NOT_FOUND') ||
-        error.message.includes('Failed to fetch')
-      );
-      
-      if (!isNetworkError && !localStorage.getItem('accessToken')) {
-        // Only clear user if there's no access token (refresh failed)
+    if (data) setUser(data);
+
+    if (error) {
+      // @ts-ignore
+      const status = (error as any)?.response?.status;
+      if (status === 401 || status === 403) {
+        localStorage.removeItem('accessToken');
         setUser(null);
       }
     }
@@ -71,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check if we have an access token to determine if we should wait for auth check
   const hasAccessToken = !!localStorage.getItem('accessToken');
-  
+
   // User is authenticated if we have user data OR if we have access token and are still loading
   // This prevents redirect to login while token refresh is happening
   const isAuthenticated = !!user || (hasAccessToken && isLoading);
