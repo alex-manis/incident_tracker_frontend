@@ -27,9 +27,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (data) {
       setUser(data);
-    } else if (error && !localStorage.getItem('accessToken')) {
-      // Only clear user if there's no access token (refresh failed)
-      setUser(null);
+    } else if (error) {
+      // Only clear user if error is not a network/module error and there's no access token
+      // This prevents clearing user on module loading errors
+      const isNetworkError = error instanceof Error && (
+        error.message.includes('Cannot find module') ||
+        error.message.includes('MODULE_NOT_FOUND') ||
+        error.message.includes('Failed to fetch')
+      );
+      
+      if (!isNetworkError && !localStorage.getItem('accessToken')) {
+        // Only clear user if there's no access token (refresh failed)
+        setUser(null);
+      }
     }
   }, [data, error]);
 
