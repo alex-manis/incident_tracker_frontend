@@ -16,13 +16,3 @@ const PassThrough = Stream;
 
 export default Stream;
 export { Readable, Writable, Transform, Duplex, PassThrough };
-
-// Also support CommonJS style exports for compatibility
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Stream;
-  module.exports.Readable = Readable;
-  module.exports.Writable = Writable;
-  module.exports.Transform = Transform;
-  module.exports.Duplex = Duplex;
-  module.exports.PassThrough = PassThrough;
-}
