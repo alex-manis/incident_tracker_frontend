@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserPublic | null>(null);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.auth.me(),
     queryFn: authApi.me,
     retry: false,
@@ -27,8 +27,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (data) {
       setUser(data);
+    } else if (error && !localStorage.getItem('accessToken')) {
+      // Only clear user if there's no access token (refresh failed)
+      setUser(null);
     }
-  }, [data]);
+  }, [data, error]);
 
   const loginMutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
@@ -56,12 +59,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await logoutMutation.mutateAsync();
   };
 
+  // Check if we have an access token to determine if we should wait for auth check
+  const hasAccessToken = !!localStorage.getItem('accessToken');
+  
+  // User is authenticated if we have user data OR if we have access token and are still loading
+  // This prevents redirect to login while token refresh is happening
+  const isAuthenticated = !!user || (hasAccessToken && isLoading);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoading: isLoading || loginMutation.isPending,
-        isAuthenticated: !!user,
+        isAuthenticated,
         login,
         logout,
       }}

@@ -8,6 +8,19 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@incident-tracker/shared': path.resolve(__dirname, './shared/src'),
+      // Polyfill Node.js stream module for browser
+      stream: path.resolve(__dirname, './src/polyfills/stream.js'),
+    },
+  },
+  define: {
+    'process.env': {},
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis',
+      },
     },
   },
   server: {
