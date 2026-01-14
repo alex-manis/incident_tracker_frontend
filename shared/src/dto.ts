@@ -8,8 +8,8 @@ export const UserPublicSchema = z.object({
     email: z.string().email(),
     role: z.nativeEnum(Role),
     isActive: z.boolean(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 });
 
 export type UserPublic = z.infer<typeof UserPublicSchema>;
@@ -23,9 +23,9 @@ export const IncidentSchema = z.object({
     status: z.nativeEnum(IncidentStatus),
     assigneeId: z.string().uuid().nullable(),
     reporterId: z.string().uuid(),
-    dueAt: z.date().nullable(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
+    dueAt: z.coerce.date().nullable(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 });
 
 export const IncidentWithRelationsSchema = IncidentSchema.extend({
@@ -42,7 +42,7 @@ export const CommentSchema = z.object({
     incidentId: z.string().uuid(),
     authorId: z.string().uuid(),
     text: z.string(),
-    createdAt: z.date(),
+    createdAt: z.coerce.date(),
 });
 
 export const CommentWithAuthorSchema = CommentSchema.extend({
@@ -129,7 +129,7 @@ export const AuditLogSchema = z.object({
     entityId: z.string().uuid(),
     action: z.string(),
     diffJson: z.record(z.unknown()).nullable(),
-    createdAt: z.date(),
+    createdAt: z.coerce.date(),
 });
 
 export const AuditLogWithActorSchema = AuditLogSchema.extend({

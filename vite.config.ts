@@ -1,16 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { streamPolyfill } from './vite-plugin-stream-polyfill';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    streamPolyfill(),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@incident-tracker/shared': path.resolve(__dirname, './shared/src'),
-      // Polyfill Node.js stream module for browser
-      stream: path.resolve(__dirname, './src/polyfills/stream.ts'),
-      'node:stream': path.resolve(__dirname, './src/polyfills/stream.ts'),
     },
   },
   define: {
