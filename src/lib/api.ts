@@ -1,11 +1,13 @@
 import axios, { AxiosError } from 'axios';
 import { LoginRequest, LoginResponse } from '@incident-tracker/shared';
 
+const rawBase = import.meta.env.VITE_API_URL || "";
+const baseURL = rawBase ? `${rawBase.replace(/\/$/, "")}/api` : "/api";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL,
   withCredentials: true,
 });
-
 // Request interceptor to add access token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
