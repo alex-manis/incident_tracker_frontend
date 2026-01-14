@@ -2,7 +2,11 @@ import axios, { AxiosError } from 'axios';
 import { LoginRequest, LoginResponse } from '@incident-tracker/shared';
 
 const rawBase = import.meta.env.VITE_API_URL || "";
-const baseURL = rawBase ? `${rawBase.replace(/\/$/, "")}/api` : "/api";
+// Remove trailing slash, then ensure /api is added if not already present
+const normalizedBase = rawBase.replace(/\/$/, "");
+const baseURL = normalizedBase
+  ? (normalizedBase.endsWith('/api') ? normalizedBase : `${normalizedBase}/api`)
+  : "/api";
 
 const api = axios.create({
   baseURL,

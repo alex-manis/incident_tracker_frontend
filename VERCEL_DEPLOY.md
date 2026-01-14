@@ -10,10 +10,10 @@ Vercel автоматически определяет Vite проект и на
 
 Добавьте переменную окружения:
 ```
-VITE_API_URL=https://your-backend-url.onrender.com/api
+VITE_API_URL=https://your-backend-url.onrender.com
 ```
 
-(Замените `your-backend-url` на реальный URL вашего backend сервиса на Render)
+(Замените `your-backend-url` на реальный URL вашего backend сервиса на Render. Не включайте `/api` в URL - он будет добавлен автоматически)
 
 ### Build Settings:
 
