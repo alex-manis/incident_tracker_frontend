@@ -31,10 +31,10 @@ export function Layout({ children }: LayoutProps) {
         >
           <h1>Incident Tracker</h1>
           <nav style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <Link to="/dashboard" style={{ textDecoration: 'none', color: '#007bff' }}>
+            <Link to="/dashboard" style={{ textDecoration: 'none', color: '#007bff', cursor: 'pointer' }}>
               Dashboard
             </Link>
-            <Link to="/incidents" style={{ textDecoration: 'none', color: '#007bff' }}>
+            <Link to="/incidents" style={{ textDecoration: 'none', color: '#007bff', cursor: 'pointer' }}>
               Incidents
             </Link>
             <span style={{ color: '#666' }}>{user?.name}</span>
@@ -55,7 +55,7 @@ export function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
+      <main style={{ maxWidth: '1200px', width: '100%', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
         {children}
       </main>
 
