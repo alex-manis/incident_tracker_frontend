@@ -305,6 +305,7 @@ export default function IncidentDetailPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
