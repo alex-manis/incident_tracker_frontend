@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { authApi } from '../lib/api';
@@ -19,10 +19,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserPublic | null>(null);
+  const [hasAccessToken, setHasAccessToken] = useState(() => !!localStorage.getItem(ACCESS_TOKEN_KEY));
   const queryClient = useQueryClient();
-
-  // Memoize access token check to avoid multiple localStorage reads
-  const hasAccessToken = useMemo(() => !!localStorage.getItem(ACCESS_TOKEN_KEY), []);
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.auth.me(),
@@ -39,11 +37,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) {
       const status = (error as AxiosError)?.response?.status;
       if (status === 401 || status === 403) {
-        // Clear auth state on auth errors
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        setUser(null);
-        // Invalidate auth queries
-        queryClient.removeQueries({ queryKey: queryKeys.auth.me() });
+        // Check if token still exists (might have been refreshed by interceptor)
+        const currentToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+        if (!currentToken) {
+          // Token refresh failed - clear auth state
+          setHasAccessToken(false);
+          setUser(null);
+          // Invalidate auth queries
+          queryClient.removeQueries({ queryKey: queryKeys.auth.me() });
+        }
+        // If token exists, interceptor might have refreshed it
+        // The query will be retried automatically by React Query
       }
     }
   }, [data, error, queryClient]);
@@ -52,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       authApi.login({ email, password }),
     onSuccess: (data) => {
+      setHasAccessToken(true);
       setUser(data.user);
       queryClient.setQueryData(queryKeys.auth.me(), data.user);
     },
@@ -61,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: authApi.logout,
     onSuccess: () => {
       setUser(null);
+      setHasAccessToken(false);
       // Clear all queries, cache, and cancel ongoing queries
       queryClient.clear();
       queryClient.cancelQueries();
@@ -69,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     onError: () => {
       // Even if logout fails on backend, clear frontend state
       setUser(null);
+      setHasAccessToken(false);
       queryClient.clear();
       queryClient.cancelQueries();
       localStorage.removeItem(ACCESS_TOKEN_KEY);
@@ -83,9 +90,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await logoutMutation.mutateAsync();
   };
 
-  // User is authenticated if we have user data OR if we have access token and are still loading
-  // This prevents redirect to login while token refresh is happening
-  const isAuthenticated = !!user || (hasAccessToken && isLoading);
+  // User is authenticated if we have user data
+  // OR if we have access token and are still checking (isLoading)
+  // OR if we have access token and haven't received a final auth error yet
+  // This prevents redirect to login while token refresh/auth check is happening
+  const hasAuthError = error && ((error as AxiosError)?.response?.status === 401 || (error as AxiosError)?.response?.status === 403);
+  const tokenStillExists = !!localStorage.getItem(ACCESS_TOKEN_KEY);
+  const isAuthenticated = !!user || (hasAccessToken && tokenStillExists && (isLoading || !hasAuthError));
 
   return (
     <AuthContext.Provider

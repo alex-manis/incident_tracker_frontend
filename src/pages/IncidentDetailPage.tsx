@@ -243,20 +243,64 @@ export default function IncidentDetailPage() {
         >
           <h3 style={{ marginBottom: '1rem' }}>Audit Log</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {auditLogs?.map((log) => (
-              <div
-                key={log.id}
-                style={{
-                  padding: '0.75rem',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem',
-                }}
-              >
-                <strong>{log.actor.name}</strong> {log.action} on{' '}
-                {new Date(log.createdAt).toLocaleString()}
-              </div>
-            ))}
+            {auditLogs?.map((log) => {
+              const formatAuditMessage = () => {
+                if (log.action === 'UPDATE' && log.diffJson) {
+                  const changes: string[] = [];
+                  
+                  // Check for status change
+                  if (log.diffJson.status && typeof log.diffJson.status === 'object') {
+                    const statusDiff = log.diffJson.status as { from?: string; to?: string };
+                    if (statusDiff.from && statusDiff.to) {
+                      changes.push(`Status changed from ${statusDiff.from} to ${statusDiff.to}`);
+                    }
+                  }
+                  
+                  // Check for comment addition (from incident update)
+                  if (log.diffJson.commentAdded === true) {
+                    changes.push('Comment added');
+                  }
+                  
+                  // Check for other field changes
+                  Object.keys(log.diffJson).forEach((key) => {
+                    if (key !== 'status' && key !== 'commentAdded' && log.diffJson) {
+                      const diff = log.diffJson[key] as { from?: unknown; to?: unknown } | undefined;
+                      if (diff && typeof diff === 'object' && 'from' in diff && 'to' in diff) {
+                        const fieldName = key.charAt(0).toUpperCase() + key.slice(1);
+                        changes.push(`${fieldName} changed from ${String(diff.from)} to ${String(diff.to)}`);
+                      }
+                    }
+                  });
+                  
+                  if (changes.length > 0) {
+                    return changes.join(', ');
+                  }
+                }
+                
+                if (log.action === 'CREATE' && log.entityType === 'Comment') {
+                  return 'Comment added';
+                }
+                
+                return log.action;
+              };
+
+              return (
+                <div
+                  key={log.id}
+                  style={{
+                    padding: '0.75rem',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '4px',
+                    fontSize: '0.875rem',
+                  }}
+                >
+                  <div style={{ marginBottom: '0.25rem' }}>
+                    <strong>{log.actor.name}</strong> {formatAuditMessage()} on{' '}
+                    {new Date(log.createdAt).toLocaleString()}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </main>
