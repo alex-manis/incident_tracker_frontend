@@ -10,6 +10,7 @@ import {
   IncidentStatus,
   IncidentSeverity,
 } from '@incident-tracker/shared';
+import { Footer } from '../components/layout/Footer';
 
 export default function IncidentsPage() {
   const { user, logout } = useAuth();
@@ -33,7 +34,7 @@ export default function IncidentsPage() {
   });
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
       <header
         style={{
           backgroundColor: 'white',
@@ -77,7 +78,7 @@ export default function IncidentsPage() {
         </div>
       </header>
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
           <h2>Incidents</h2>
           <Link
@@ -258,6 +259,7 @@ export default function IncidentsPage() {
           </>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

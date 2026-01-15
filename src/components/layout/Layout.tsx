@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { Footer } from './Footer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,7 +11,7 @@ export function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuth();
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
       <header
         style={{
           backgroundColor: 'white',
@@ -54,9 +55,11 @@ export function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
         {children}
       </main>
+
+      <Footer />
     </div>
   );
 }

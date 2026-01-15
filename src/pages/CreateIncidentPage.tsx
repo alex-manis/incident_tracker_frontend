@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import { queryKeys, CreateIncidentRequest, IncidentSeverity } from '@incident-tracker/shared';
+import { Footer } from '../components/layout/Footer';
 
 export default function CreateIncidentPage() {
   const { user, logout } = useAuth();
@@ -29,7 +30,7 @@ export default function CreateIncidentPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
       <header
         style={{
           backgroundColor: 'white',
@@ -73,7 +74,7 @@ export default function CreateIncidentPage() {
         </div>
       </header>
 
-      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '0 2rem' }}>
+      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
         <Link to="/incidents" style={{ textDecoration: 'none', color: '#007bff', marginBottom: '1rem', display: 'inline-block' }}>
           ← Back to Incidents
         </Link>
@@ -216,6 +217,7 @@ export default function CreateIncidentPage() {
           </form>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import { queryKeys, IncidentWithRelations, CommentWithAuthor, UpdateIncidentRequest, IncidentStatus, AuditLogWithActor } from '@incident-tracker/shared';
+import { Footer } from '../components/layout/Footer';
 
 export default function IncidentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -77,7 +78,7 @@ export default function IncidentDetailPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
       <header
         style={{
           backgroundColor: 'white',
@@ -121,7 +122,7 @@ export default function IncidentDetailPage() {
         </div>
       </header>
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
         <Link to="/incidents" style={{ textDecoration: 'none', color: '#007bff', marginBottom: '1rem', display: 'inline-block' }}>
           ← Back to Incidents
         </Link>

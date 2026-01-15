@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import { queryKeys, DashboardSummary } from '@incident-tracker/shared';
 import { Link } from 'react-router-dom';
+import { Footer } from '../components/layout/Footer';
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
@@ -16,7 +17,7 @@ export default function DashboardPage() {
   });
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
       <header
         style={{
           backgroundColor: 'white',
@@ -60,7 +61,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem', flex: 1 }}>
         <h2 style={{ marginBottom: '1.5rem' }}>Dashboard</h2>
 
         {isLoading ? (
@@ -146,6 +147,7 @@ export default function DashboardPage() {
           </div>
         ) : null}
       </main>
+      <Footer />
     </div>
   );
 }
