@@ -41,7 +41,11 @@ export default function IncidentDetailPage() {
   const updateMutation = useMutation({
     mutationFn: (data: UpdateIncidentRequest) => api.patch(`/incidents/${id}`, data),
     onSuccess: () => {
+      // Invalidate all related queries after status update
       queryClient.invalidateQueries({ queryKey: queryKeys.incidents.detail(id!) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.incidents.lists() }); // Invalidate all incident lists
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.summary() }); // Invalidate dashboard summary
+      queryClient.invalidateQueries({ queryKey: queryKeys.incidents.audit(id!) }); // Invalidate audit logs
     },
   });
 
