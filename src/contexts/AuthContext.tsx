@@ -8,7 +8,8 @@ const ACCESS_TOKEN_KEY = 'accessToken';
 
 interface AuthContextType {
   user: UserPublic | null;
-  isLoading: boolean;
+  isLoading: boolean; // Loading state for auth check (me query)
+  isLoggingIn: boolean; // Loading state for login mutation
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -90,7 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        isLoading: isLoading || loginMutation.isPending,
+        isLoading, // Auth check loading state
+        isLoggingIn: loginMutation.isPending, // Login mutation loading state
         isAuthenticated,
         login,
         logout,

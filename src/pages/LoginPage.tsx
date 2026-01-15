@@ -8,14 +8,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, isLoading } = useAuth();
+  const { login, isLoggingIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Prevent double submit
-    if (isSubmitting || isLoading) {
+    if (isSubmitting || isLoggingIn) {
       return;
     }
     
@@ -123,7 +123,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            disabled={isLoading || isSubmitting}
+            disabled={isLoggingIn || isSubmitting}
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -132,11 +132,11 @@ export default function LoginPage() {
               border: 'none',
               borderRadius: '4px',
               fontSize: '1rem',
-              cursor: isLoading || isSubmitting ? 'not-allowed' : 'pointer',
-              opacity: isLoading || isSubmitting ? 0.6 : 1,
+              cursor: isLoggingIn || isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isLoggingIn || isSubmitting ? 0.6 : 1,
             }}
           >
-            {isLoading || isSubmitting ? 'Logging in...' : 'Login'}
+            {isLoggingIn || isSubmitting ? 'Logging in...' : 'Login'}
           </button>
         </form>
         <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666', textAlign: 'center' }}>
