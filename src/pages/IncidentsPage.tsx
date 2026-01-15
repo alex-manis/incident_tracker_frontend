@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import {
@@ -13,6 +13,7 @@ import {
 
 export default function IncidentsPage() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [filters, setFilters] = useState<IncidentFilters>({});
   const [page, setPage] = useState(1);
 
@@ -199,7 +200,7 @@ export default function IncidentsPage() {
                     <tr
                       key={incident.id}
                       style={{ borderBottom: '1px solid #eee', cursor: 'pointer' }}
-                      onClick={() => (window.location.href = `/incidents/${incident.id}`)}
+                      onClick={() => navigate(`/incidents/${incident.id}`)}
                     >
                       <td style={{ padding: '0.75rem' }}>
                         <Link

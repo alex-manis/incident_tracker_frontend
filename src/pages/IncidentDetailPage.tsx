@@ -1,10 +1,9 @@
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
-import { queryKeys, IncidentWithRelations, CommentWithAuthor, UpdateIncidentRequest, IncidentStatus } from '@incident-tracker/shared';
-import { useState } from 'react';
+import { queryKeys, IncidentWithRelations, CommentWithAuthor, UpdateIncidentRequest, IncidentStatus, AuditLogWithActor } from '@incident-tracker/shared';
 
 export default function IncidentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -30,7 +29,7 @@ export default function IncidentDetailPage() {
     enabled: !!id,
   });
 
-  const { data: auditLogs } = useQuery({
+  const { data: auditLogs } = useQuery<AuditLogWithActor[]>({
     queryKey: queryKeys.incidents.audit(id!),
     queryFn: async () => {
       const response = await api.get(`/incidents/${id}/audit`);
@@ -240,7 +239,7 @@ export default function IncidentDetailPage() {
         >
           <h3 style={{ marginBottom: '1rem' }}>Audit Log</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {auditLogs?.map((log: any) => (
+            {auditLogs?.map((log) => (
               <div
                 key={log.id}
                 style={{

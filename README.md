@@ -1,8 +1,8 @@
 # Incident Tracker Frontend
 
-React приложение для системы отслеживания инцидентов.
+React application for the incident tracking system.
 
-## Технологии
+## Technologies
 
 - React + TypeScript
 - Vite
@@ -10,58 +10,58 @@ React приложение для системы отслеживания инц
 - TanStack Query
 - Axios
 
-## Установка
+## Installation
 
 ```bash
 pnpm install
 ```
 
-## Настройка
+## Configuration
 
-Настройте API URL в `src/lib/api.ts` если backend работает на другом порту/домене.
+Configure API URL in `src/lib/api.ts` if backend runs on a different port/domain.
 
-По умолчанию используется прокси через Vite (см. `vite.config.ts`).
+By default, proxy is used through Vite (see `vite.config.ts`).
 
-## Запуск
+## Running
 
 ```bash
-# Разработка
+# Development
 pnpm dev
 
-# Сборка
+# Build
 pnpm build
 
-# Превью продакшн сборки
+# Preview production build
 pnpm preview
 ```
 
-## Структура проекта
+## Project Structure
 
 ```
 src/
-├── main.tsx           # Точка входа
-├── App.tsx            # Главный компонент
-├── pages/             # Страницы
-├── components/         # Компоненты
-├── contexts/          # React контексты
-└── lib/               # Утилиты (API клиент)
+├── main.tsx           # Entry point
+├── App.tsx            # Main component
+├── pages/             # Pages
+├── components/        # Components
+├── contexts/          # React contexts
+└── lib/               # Utilities (API client)
 ```
 
-## Маршруты
+## Routes
 
-- `/login` - Страница входа
-- `/dashboard` - Дашборд со статистикой
-- `/incidents` - Список инцидентов
-- `/incidents/new` - Создание инцидента
-- `/incidents/:id` - Детали инцидента
+- `/login` - Login page
+- `/dashboard` - Dashboard with statistics
+- `/incidents` - Incidents list
+- `/incidents/new` - Create incident
+- `/incidents/:id` - Incident details
 
-## Зависимости
+## Dependencies
 
-Проект использует общий пакет `@incident-tracker/shared` для типов и схем. Убедитесь, что он доступен в workspace или установлен отдельно.
+The project uses a shared package `@incident-tracker/shared` for types and schemas. Make sure it's available in the workspace or installed separately.
 
-## Переменные окружения
+## Environment Variables
 
-Создайте `.env` файл при необходимости:
+Create a `.env` file if needed:
 
 ```env
 VITE_API_URL=http://localhost:3001

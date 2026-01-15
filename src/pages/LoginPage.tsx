@@ -1,23 +1,44 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent double submit
+    if (isSubmitting || isLoading) {
+      return;
+    }
+    
     setError('');
+    setIsSubmitting(true);
 
     try {
       await login(email, password);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed');
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      const status = axiosError.response?.status;
+      const errorData = axiosError.response?.data as { message?: string; error?: string } | undefined;
+      
+      if (status === 429) {
+        // Handle rate limit
+        const message = errorData?.message || 'Too many login attempts. Please wait a minute before trying again.';
+        setError(message);
+      } else {
+        setError(errorData?.error || errorData?.message || 'Login failed');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -102,7 +123,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isSubmitting}
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -111,11 +132,11 @@ export default function LoginPage() {
               border: 'none',
               borderRadius: '4px',
               fontSize: '1rem',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
+              cursor: isLoading || isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isLoading || isSubmitting ? 0.6 : 1,
             }}
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading || isSubmitting ? 'Logging in...' : 'Login'}
           </button>
         </form>
         <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666', textAlign: 'center' }}>
